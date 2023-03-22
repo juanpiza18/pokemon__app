@@ -52,3 +52,12 @@ progress::-webkit-progress-value {
   background-color: #4caf50;
   border-radius: 10px;
 }
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

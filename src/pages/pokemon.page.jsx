@@ -1,18 +1,17 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import Spinner from "../components/spinner/spinner.component";
-import PokemonType from "../components/pokemon-type/pokemonType.component";
 import { getPokemonById } from "../utils/pokemonApi";
-import "./pokemon-page.styles.css";
 import Header from "../components/header/header.component";
 import PokemonStats from "../components/pokemon-stats/pokemonStats.component";
+import PokemonMoves from "../components/pokemon-moves/pokemonMoves.component";
+import PokemonProfile from "../components/pokemon-profile/pokemonProfile.component";
 
 const PokemonPage = () => {
   let image = null;
   const [pokemon, setPokemon] = useState(null);
   const [pokemonLoading, setpokemonLoading] = useState(true);
   const { id } = useParams();
-  console.log(id);
 
   const fetchPokemonData = useCallback(async () => {
     const data = await getPokemonById(id);
@@ -38,53 +37,10 @@ const PokemonPage = () => {
           <Spinner />
         ) : (
           <>
-            <div className="pokemon__heading">
-              <span className="heading__number"> #{pokemon.id}</span>
-              <img
-                className="heading__image"
-                src={image}
-                alt={`Pokemon - ${pokemon.name}`}
-              />
-              <div className="pokemonheading__information">
-                <h1 className="pokemonheading__name"> {pokemon.name}</h1>
-                <div className="pokemonheading__types">
-                  {pokemon.types.map(({ type }, index) => (
-                    <PokemonType key={index} nameType={type.name} />
-                  ))}
-                </div>
-              </div>
-              <div className="pokemon__basic">
-                <div className="group__info">
-                  <h3> Height </h3>
-                  <span> {pokemon.height}</span>
-                </div>
-                <div className="group__info">
-                  <h3> Weight </h3>
-                  <span> {pokemon.weight}</span>
-                </div>
-                <div className="group__info">
-                  <h3> Base Experience </h3>
-                  <span> {pokemon.base_experience}</span>
-                </div>
-              </div>
-            </div>
+            <PokemonProfile pokemon={pokemon} image={image} />
             <div>
               <PokemonStats stats={pokemon.stats} />
-              <div className="pokemon__moves">
-                <h2>Principal Moves</h2>
-                <div className="listgrid__container">
-                  <ul>
-                    {pokemon.moves.slice(0, 15).map((move, index) => (
-                      <li key={index}>{move.move.name}</li>
-                    ))}
-                  </ul>
-                  <ul>
-                    {pokemon.moves.slice(15, 30).map((move, index) => (
-                      <li key={index}>{move.move.name}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
+              <PokemonMoves moves={pokemon.moves} />
             </div>
           </>
         )}

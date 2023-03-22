@@ -2,6 +2,24 @@ import React, { useState, useCallback } from "react";
 import PokemonContext from "./pokemonContext";
 import { getAllPokemons, getPokemonListByOffset } from "../utils/pokemonApi";
 import { defaultPokemonsSize } from "../utils/constants";
+import Fuse from "fuse.js";
+
+const options = {
+  // isCaseSensitive: false,
+  // includeScore: false,
+  shouldSort: false,
+  // includeMatches: false,
+  findAllMatches: true,
+  // minMatchCharLength: 1,
+  // location: 0,
+  threshold: 0.5,
+  // distance: 100,
+  // useExtendedSearch: false,
+  // ignoreLocation: false,
+  // ignoreFieldNorm: false,
+  // fieldNormWeight: 1,
+  keys: ["name"],
+};
 
 export const PokemonProvider = ({ children }) => {
   const [pokemonsList, setPokemonList] = useState([]);
@@ -20,10 +38,8 @@ export const PokemonProvider = ({ children }) => {
     async (filter) => {
       setLoading(true);
       const data = await getAllPokemons();
-      // TODO: Mejorar Filtro
-      const filterData = data.filter((pokemon) =>
-        pokemon.name.includes(filter)
-      );
+      const fuse = new Fuse(data, options);
+      const filterData = fuse.search(filter).map((data) => data.item);
       setAllPokemonsFilter(filterData);
       setLoading(false);
     },
