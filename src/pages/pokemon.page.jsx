@@ -5,6 +5,7 @@ import PokemonType from "../components/pokemon-type/pokemonType.component";
 import { getPokemonById } from "../utils/pokemonApi";
 import "./pokemon-page.styles.css";
 import Header from "../components/header/header.component";
+import PokemonStats from "../components/pokemon-stats/pokemonStats.component";
 
 const PokemonPage = () => {
   let image = null;
@@ -19,23 +20,7 @@ const PokemonPage = () => {
     setpokemonLoading(false);
   }, [id]);
 
-  // const retrievePokemon = useCallback(async () => {
-  //   console.log("Entro al metodo retrieve");
-  //   setpokemonLoading(true);
-  //   const pokemonFromList = pokemonsList.find((pokemon) => pokemon.id === id);
-  //   if (!pokemonFromList) {
-  //     const data = await getPokemonById(id);
-  //     setPokemon(data);
-  //     setpokemonLoading(false);
-  //   } else {
-  //     setPokemon(pokemonFromList);
-  //     setpokemonLoading(false);
-  //   }
-  // }, [id, pokemonsList]);
-
   useEffect(() => {
-    console.log("Entro al metodo useEffect");
-    console.log("UseEffect retrieve pokemon");
     fetchPokemonData();
   }, [fetchPokemonData]);
 
@@ -84,16 +69,7 @@ const PokemonPage = () => {
               </div>
             </div>
             <div>
-              <div className="pokemon__stats">
-                <h2>Stats</h2>
-                {pokemon.stats.map((stat, index) => (
-                  <div key={index} className="stat__group">
-                    <span>{stat.stat.name}</span>
-                    <progress value={stat.base_stat} max={230} />
-                    <span>{stat.base_stat}</span>
-                  </div>
-                ))}
-              </div>
+              <PokemonStats stats={pokemon.stats} />
               <div className="pokemon__moves">
                 <h2>Principal Moves</h2>
                 <div className="listgrid__container">

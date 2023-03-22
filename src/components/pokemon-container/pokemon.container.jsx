@@ -1,82 +1,44 @@
-import React, { useContext, useState, useEffect, useCallback } from "react";
+import React, { useContext, useEffect } from "react";
 import PokemonContext from "../../context/pokemonContext";
 import PokemonList from "../card-list/cardList.component";
-import { getPokemonListByOffset, getAllPokemons } from "../../utils/pokemonApi";
 import "./pokemon.container.css";
-import Spinner from "../spinner/spinner.component";
 import useResultsPaginated from "../../hooks/useResultsPagination.hooks";
+import Pagination from "../pagination/pagination.component";
 
 const PokemonContainer = ({ filter = null }) => {
-  const [loading, setLoading] = useState(true);
-  const { offset, setOffset, pokemonsList, setPokemonList } =
-    useContext(PokemonContext);
+  const {
+    loading,
+    dataList,
+    filteredList,
+    paginationNext,
+    paginationPrev,
+    filterAllList,
+    fetchData,
+  } = useContext(PokemonContext);
 
   const { filteredArray, pageOffsetNext, setPageOffset, pageOffsetPrev } =
-    useResultsPaginated({ initialItems: pokemonsList });
-
-  const paginationNext = () => {
-    setOffset((prev) => {
-      if (prev === 1281) {
-        return 1261;
-      }
-      return prev + 21;
-    });
-  };
-
-  const paginationPrev = () => {
-    setOffset((prev) => {
-      if (prev > 0) {
-        return prev - 21;
-      }
-      return 0;
-    });
-  };
-
-  const fetchPokemonList = useCallback(async () => {
-    const data = await getPokemonListByOffset(offset);
-    setPokemonList(data);
-    setLoading(false);
-  }, [offset, setPokemonList, setLoading]);
-
-  const fetchPokemonFilter = useCallback(async () => {
-    setLoading(true);
-    const data = await getAllPokemons();
-    const filterData = data.filter((pokemon) => pokemon.name.includes(filter));
-    setPokemonList(filterData);
-    setLoading(false);
-  }, [filter, setPokemonList, setLoading]);
+    useResultsPaginated({ initialItems: filteredList });
 
   useEffect(() => {
     if (filter) {
       setPageOffset(0);
-      fetchPokemonFilter();
+      filterAllList(filter);
     } else {
-      fetchPokemonList();
+      fetchData();
     }
-  }, [fetchPokemonList, fetchPokemonFilter, setPageOffset, filter]);
+  }, [fetchData, filterAllList, setPageOffset, filter]);
 
   return (
     <div className="flex__container">
-      <div className="list__actions">
-        <button
-          className="btn"
-          onClick={filter ? pageOffsetPrev : paginationPrev}
-        >
-          &larr; Prev
-        </button>
-        <button
-          className="btn"
-          onClick={filter ? pageOffsetNext : paginationNext}
-        >
-          Next &rarr;
-        </button>
-      </div>
+      <Pagination
+        paginationNext={filter ? pageOffsetNext : paginationNext}
+        paginationPrev={filter ? pageOffsetPrev : paginationPrev}
+      />
       <div className="card__grid">
-        {loading ? (
-          <Spinner />
-        ) : (
-          <PokemonList list={filter ? filteredArray : pokemonsList} />
-        )}
+        <PokemonList
+          loading={loading}
+          list={filter ? filteredArray : dataList}
+        />
       </div>
     </div>
   );

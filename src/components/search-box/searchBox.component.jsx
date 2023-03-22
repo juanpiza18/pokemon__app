@@ -1,7 +1,8 @@
 import React from "react";
 import "./searchBox.styles.css";
+import { debounceUserInputTimeout } from "../../utils/constants";
 
-function debounce(func, timeout = 600) {
+function debounce(func, timeout = debounceUserInputTimeout) {
   let timer;
   return (...args) => {
     clearTimeout(timer);

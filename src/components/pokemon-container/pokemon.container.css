@@ -1,9 +1,3 @@
-.list__actions {
-  display: flex;
-  justify-content: space-evenly;
-  width: 300px;
-}
-
 .card__grid {
   margin-top: 1rem;
   padding: 2rem;
