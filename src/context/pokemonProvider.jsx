@@ -1,6 +1,10 @@
 import React, { useState, useCallback } from "react";
 import PokemonContext from "./pokemonContext";
-import { getAllPokemons, getPokemonListByOffset } from "../utils/pokemonApi";
+import {
+  getAllPokemons,
+  getPokemonListByOffset,
+  getPokemonById,
+} from "../utils/pokemonApi";
 import { defaultPokemonsSize } from "../utils/constants";
 import Fuse from "fuse.js";
 
@@ -26,6 +30,8 @@ export const PokemonProvider = ({ children }) => {
   const [allPokemonsFilter, setAllPokemonsFilter] = useState([]);
   const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [pokemon, setPokemon] = useState(null);
+  const [pokemonLoading, setpokemonLoading] = useState(true);
 
   const fetchPokemonsOffset = useCallback(async () => {
     setLoading(true);
@@ -33,6 +39,16 @@ export const PokemonProvider = ({ children }) => {
     setPokemonList(data);
     setLoading(false);
   }, [offset, setPokemonList, setLoading]);
+
+  const fetchPokemonData = useCallback(
+    async (id) => {
+      setpokemonLoading(true);
+      const data = await getPokemonById(id);
+      setPokemon(data);
+      setpokemonLoading(false);
+    },
+    [setPokemon, setpokemonLoading]
+  );
 
   const filterAllPokemonsList = useCallback(
     async (filter) => {
@@ -75,6 +91,9 @@ export const PokemonProvider = ({ children }) => {
         paginationPrev,
         filterAllList: filterAllPokemonsList,
         fetchData: fetchPokemonsOffset,
+        fetchPokemonData,
+        pokemon,
+        pokemonLoading,
       }}
     >
       {children}

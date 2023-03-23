@@ -1,27 +1,21 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import Spinner from "../components/spinner/spinner.component";
-import { getPokemonById } from "../utils/pokemonApi";
 import Header from "../components/header/header.component";
 import PokemonStats from "../components/pokemon-stats/pokemonStats.component";
 import PokemonMoves from "../components/pokemon-moves/pokemonMoves.component";
 import PokemonProfile from "../components/pokemon-profile/pokemonProfile.component";
+import PokemonContext from "../context/pokemonContext";
 
 const PokemonPage = () => {
   let image = null;
-  const [pokemon, setPokemon] = useState(null);
-  const [pokemonLoading, setpokemonLoading] = useState(true);
+  const { fetchPokemonData, pokemon, pokemonLoading } =
+    useContext(PokemonContext);
   const { id } = useParams();
 
-  const fetchPokemonData = useCallback(async () => {
-    const data = await getPokemonById(id);
-    setPokemon(data);
-    setpokemonLoading(false);
-  }, [id]);
-
   useEffect(() => {
-    fetchPokemonData();
-  }, [fetchPokemonData]);
+    fetchPokemonData(id);
+  }, [fetchPokemonData, id]);
 
   if (pokemon?.sprites) {
     image =
