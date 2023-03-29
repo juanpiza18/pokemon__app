@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import PokemonContext from "./pokemonContext";
 import {
   getAllPokemons,
@@ -16,7 +16,7 @@ const options = {
   findAllMatches: true,
   // minMatchCharLength: 1,
   // location: 0,
-  threshold: 0.5,
+  threshold: 0.3,
   // distance: 100,
   // useExtendedSearch: false,
   // ignoreLocation: false,
@@ -26,12 +26,14 @@ const options = {
 };
 
 export const PokemonProvider = ({ children }) => {
+  let fuseRef = useRef(null);
   const [pokemonsList, setPokemonList] = useState([]);
   const [allPokemonsFilter, setAllPokemonsFilter] = useState([]);
   const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(true);
   const [pokemon, setPokemon] = useState(null);
   const [pokemonLoading, setpokemonLoading] = useState(true);
+  const [allPokemons, setAllPokemons] = useState([]);
 
   const fetchPokemonsOffset = useCallback(async () => {
     setLoading(true);
@@ -53,13 +55,19 @@ export const PokemonProvider = ({ children }) => {
   const filterAllPokemonsList = useCallback(
     async (filter) => {
       setLoading(true);
-      const data = await getAllPokemons();
-      const fuse = new Fuse(data, options);
-      const filterData = fuse.search(filter).map((data) => data.item);
+      const data =
+        allPokemons.length > 0 ? allPokemons : await getAllPokemons();
+      if (allPokemons.length === 0) {
+        setAllPokemons(data);
+        fuseRef.current = new Fuse(data, options);
+      }
+      const filterData = fuseRef.current
+        ?.search(filter)
+        .map((data) => data.item);
       setAllPokemonsFilter(filterData);
       setLoading(false);
     },
-    [setAllPokemonsFilter, setLoading]
+    [allPokemons, setAllPokemonsFilter, setLoading]
   );
 
   const paginationNext = () => {
