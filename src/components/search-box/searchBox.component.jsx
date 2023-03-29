@@ -1,22 +1,13 @@
 import React from "react";
-import "./searchBox.styles.css";
-
-function debounce(func, timeout = 600) {
-  let timer;
-  return (...args) => {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      func.apply(this, args);
-    }, timeout);
-  };
-}
+import styles from "./searchBox.module.css";
+import { debounce } from "../../utils/utils";
 
 const SearchBox = ({ placeHolder, handleChange }) => {
   const handleSearch = debounce((event) => handleChange(event));
   return (
-    <div className="search__container">
+    <div className={styles.search__container}>
       <input
-        className="search"
+        className={styles.search}
         type="search"
         placeholder={placeHolder}
         onChange={handleSearch}

@@ -1,5 +1,5 @@
 import React from "react";
-import "./pokemonType.styles.css";
+import styles from "./pokemonType.module.css";
 
 const types = {
   grass: { styleType: "types--green", icon: "fa-leaf" },
@@ -28,12 +28,12 @@ const PokemonType = ({ nameType }) => {
   return (
     <>
       {pokemonType ? (
-        <div className={`types ${pokemonType.styleType}`}>
+        <div className={`${styles.types} ${styles[pokemonType.styleType]}`}>
           <i className={`fa-solid ${pokemonType.icon}`}></i>
-          {nameType}
+          <span>{nameType}</span>
         </div>
       ) : (
-        <div className="types">
+        <div className={styles.types}>
           <i className="fa-solid fa-paw"></i>
           {nameType}
         </div>

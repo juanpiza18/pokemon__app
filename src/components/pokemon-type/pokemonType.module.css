@@ -7,9 +7,9 @@
   text-align: center;
   font-size: 1.2rem;
   text-transform: capitalize;
-}
-.fa-solid {
-  margin-right: 9px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
 
 .types:not(:last-child) {

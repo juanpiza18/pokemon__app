@@ -1,7 +1,7 @@
 import React from "react";
+import { defaultPageSize } from "../utils/constants";
 
 const useResultsPaginated = ({ initialItems }) => {
-  const defaultPageSize = 21; // dejar por fuera porque es un const no se va a redeclarar.
   const [items, setItems] = React.useState(initialItems);
   const [filteredArray, setfilteredArray] = React.useState([]);
   const [pageOffset, setPageOffset] = React.useState(0);
